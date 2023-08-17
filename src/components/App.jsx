@@ -11,7 +11,7 @@ export class App extends Component {
   };
 
   // #1 функція для передачі значення інпута при сабміті форми
-  onSubmit = inputValue => {
+  onSubmit = (inputValue) => {
     this.setState({
       submit: inputValue,
     });
