@@ -4,8 +4,8 @@ import { GlobalStyle } from './Global.style';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { fetchImages } from './API';
-
-
+import { Puff } from 'react-loader-spinner';
+import { Loader } from './Loader/Loader';
 
 export class App extends Component {
   state = {
@@ -13,9 +13,8 @@ export class App extends Component {
     query: '',
     page: 1,
     imagesPerPage: 12,
+    isLoading: false, // стан завантаження для лоадера
   };
-
-
 
   // #1 функція для передачі значення інпута при сабміті форми
   onSubmit = (inputValue) => {
@@ -25,43 +24,57 @@ export class App extends Component {
       page: 1,
     });
   };
-  // ------------------------------------------------------
-// #2 HTTP запит
-componentDidUpdate = async (prevProps, prevState) => {
-  if (prevState.query !== this.state.query || prevState.page !== this.state.page) {
-    console.log(`HTTP запит за ${this.state.query}, сторінка №${this.state.page}`);
-    // Виконуємо HTTP запит та отримуємо зображення
-    const images = await fetchImages({ query: this.state.query, page: this.state.page });
 
-    if (images.length === 0) {
-      alert('No images found.');
+  // #2 HTTP запит
+  componentDidUpdate = async (prevProps, prevState) => {
+    if (prevState.query !== this.state.query || prevState.page !== this.state.page) {
+      this.setState({ isLoading: true }); // початок завантаження
+      console.log(`HTTP запит за ${this.state.query}, сторінка №${this.state.page}`);
+      // Виконуємо HTTP запит та отримуємо зображення
+      const images = await fetchImages({
+        query: this.state.query,
+        page: this.state.page,
+      });
+
+      if (images.length === 0) {
+        alert('No images found.');
+      }
+
+      // Оновлюємо стан, додаючи нові зображення до попередніх
+      this.setState((prevState) => ({
+        images: [...prevState.images, ...images],
+        isLoading: false, // завершення завантаження
+      }));
     }
+  };
 
-    // Оновлюємо стан, додаючи нові зображення до попередніх
-    this.setState((prevState) => ({
-      images: [...prevState.images, ...images],
-    }));
-  }
-}
-  // ------------------------------------------------------
   // #3 кнопка LoadMore
   handleLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1}));
+    this.setState((prevState) => ({
+      page: prevState.page + 1,
+      isLoading: true, // початок завантаження
+    }));
   };
-  // ------------------------------------------------------
-  render() 
-  {
-    const { images, query, imagesPerPage } = this.state;
+
+  render() {
+    const { images, query, imagesPerPage, isLoading } = this.state;
 
     return (
-      <section>
+      <section style={{
+        position: 'relative',
+
+      }}>
         <SearchBar onSubmit={this.onSubmit} />
-        <ImageGallery images={images}/>
+        <ImageGallery images={images} />
+        {isLoading && (
+          <Loader/>
+        )}
         {images.length > 0 && query !== '' && images.length % imagesPerPage === 0 && (
           <Button onClick={this.handleLoadMore} />
         )}
-        <GlobalStyle/>
+        <GlobalStyle />
       </section>
     );
   }
 }
+
