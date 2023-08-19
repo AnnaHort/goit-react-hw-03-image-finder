@@ -1,3 +1,4 @@
+import { ButtonStyled, FormStyled, InputStyled, SectionContainerStyled } from "./SearchBar.styled";
 
 export const SearchBar = ({onSubmit}) => {
 
@@ -13,20 +14,20 @@ export const SearchBar = ({onSubmit}) => {
   };
 
 return(
-    <header className="searchbar">
-    <form className="form" onSubmit={handleSubmit}>
-      <button type="submit" className="button">
+    <SectionContainerStyled className="searchbar">
+    <FormStyled className="form" onSubmit={handleSubmit}>
+      <ButtonStyled type="submit" className="button">
         <span className="button-label">Search</span>
-      </button>
+      </ButtonStyled>
   
-      <input
+      <InputStyled
         className="input"
         type="text"
         autoComplete="off"
         autoFocus
         placeholder="Search images and photos"
       />
-    </form>
-  </header>
+    </FormStyled>
+  </SectionContainerStyled>
 )
 }

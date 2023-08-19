@@ -1,6 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
-import styled from 'styled-components';
+
 import 'modern-normalize';
+
 
 export const GlobalStyle = createGlobalStyle`
 h1,
@@ -19,6 +20,7 @@ ol {
     margin-top: 0;
     margin-bottom: 0;
     padding-left: 0;
+    list-style: none;
 }
 
 img {
@@ -31,6 +33,3 @@ button {
 
 `;
 
-export const SectionContainer = styled.div`
-margin-left: 20px;
-`
