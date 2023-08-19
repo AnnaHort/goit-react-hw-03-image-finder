@@ -10,10 +10,10 @@ export const LoaderContainer = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 `;
 
 export const PuffStyled = styled(Puff)`
-height: 80px;
-width: 80px;
-`
+  height: 80px;
+  width: 80px;
+`;

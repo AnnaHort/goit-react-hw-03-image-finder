@@ -5,6 +5,7 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { fetchImages } from './API';
 import { Loader } from './Loader/Loader';
+import { ModalContainer } from './Modal/Modal';
 
 export class App extends Component {
   state = {
@@ -13,10 +14,11 @@ export class App extends Component {
     page: 1,
     imagesPerPage: 12,
     isLoading: false, // стан завантаження для лоадера
+    selectedImageUrl: null, //стан відображення модального вікна
   };
 
   // #1 функція для передачі значення інпута при сабміті форми
-  onSubmit = (inputValue) => {
+  onSubmit = inputValue => {
     this.setState({
       query: inputValue,
       images: [],
@@ -26,9 +28,14 @@ export class App extends Component {
 
   // #2 HTTP запит
   componentDidUpdate = async (prevProps, prevState) => {
-    if (prevState.query !== this.state.query || prevState.page !== this.state.page) {
+    if (
+      prevState.query !== this.state.query ||
+      prevState.page !== this.state.page
+    ) {
       this.setState({ isLoading: true }); // початок завантаження
-      console.log(`HTTP запит за ${this.state.query}, сторінка №${this.state.page}`);
+      console.log(
+        `HTTP запит за ${this.state.query}, сторінка №${this.state.page}`
+      );
       // Виконуємо HTTP запит та отримуємо зображення
       const images = await fetchImages({
         query: this.state.query,
@@ -40,7 +47,7 @@ export class App extends Component {
       }
 
       // Оновлюємо стан, додаючи нові зображення до попередніх
-      this.setState((prevState) => ({
+      this.setState(prevState => ({
         images: [...prevState.images, ...images],
         isLoading: false, // завершення завантаження
       }));
@@ -49,31 +56,36 @@ export class App extends Component {
 
   // #3 кнопка LoadMore
   handleLoadMore = () => {
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       page: prevState.page + 1,
       isLoading: true, // початок завантаження
     }));
   };
 
+  // #5 стан відображення модального вікна
+  openModal = (imageUrl) => {
+    this.setState({ selectedImageUrl: imageUrl });
+  };
+
+  closeModal = () => {
+    console.log("Closing modal...");
+    this.setState({ selectedImageUrl: null });
+  };
+
   render() {
-    const { images, query, imagesPerPage, isLoading } = this.state;
-
+    const { images, query, imagesPerPage, isLoading, selectedImageUrl } = this.state;
+  
     return (
-      <section style={{
-        position: 'relative',
-
-      }}>
+      <section style={{ position: 'relative' }}>
         <SearchBar onSubmit={this.onSubmit} />
-        <ImageGallery images={images} />
-        {isLoading && (
-          <Loader/>
-        )}
+        <ImageGallery images={images} onImageClick={this.openModal} />
+        {isLoading && <Loader />}
         {images.length > 0 && query !== '' && images.length % imagesPerPage === 0 && (
           <Button onClick={this.handleLoadMore} />
         )}
         <GlobalStyle />
+        <ModalContainer isOpen={selectedImageUrl !== null} imageUrl={selectedImageUrl} onClose={this.closeModal} />
       </section>
     );
   }
 }
-
