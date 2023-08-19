@@ -6,6 +6,7 @@ export const SearchBar = ({onSubmit}) => {
     const inputValue = evt.target.querySelector('.input').value;
     if (inputValue === '' || inputValue === null || inputValue === undefined) {
       alert('You didnt write any word!!');
+      return
     }
     onSubmit(inputValue);
     evt.target.reset();

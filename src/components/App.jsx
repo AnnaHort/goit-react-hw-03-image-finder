@@ -3,30 +3,35 @@ import { SearchBar } from './Searchbar';
 import { GlobalStyle } from './Global.style';
 import { ImageGallery } from './ImageGallery';
 import { Button } from './Button';
+import { fetchImages } from './API';
 
 
 export class App extends Component {
   state = {
     images: [],
-    submit: '',
+    query: '',
     page: 1,
   };
 
   // #1 функція для передачі значення інпута при сабміті форми
   onSubmit = (inputValue) => {
     this.setState({
-      submit: inputValue,
+      query: inputValue,
       images: [],
       page: 1,
     });
   };
   // ------------------------------------------------------
 // #2 HTTP запит
-componentDidUpdate = (prevProps, prevState) => {
-  if(prevState.submit !== this.state.submit || prevState.page !== this.state.page){
-    console.log(`HTTP запит за ${this.state.submit}, сторінка №${this.state.page}`)
-    // виконуємо HTTP запит
-    // this.setState({images: результат запиту})
+componentDidUpdate = async (prevProps, prevState) => {
+  if (prevState.query !== this.state.query || prevState.page !== this.state.page) {
+    console.log(`HTTP запит за ${this.state.query}, сторінка №${this.state.page}`);
+    // Виконуємо HTTP запит та отримуємо зображення
+    const images = await fetchImages({ query: this.state.query, page: this.state.page });
+    // Оновлюємо стан, додаючи нові зображення до попередніх
+    this.setState((prevState) => ({
+      images: [...prevState.images, ...images],
+    }));
   }
 }
   // ------------------------------------------------------
@@ -39,7 +44,7 @@ componentDidUpdate = (prevProps, prevState) => {
     return (
       <section>
         <SearchBar onSubmit={this.onSubmit} />
-        <ImageGallery/>
+        <ImageGallery images={this.state.images}/>
         <Button onClick={this.handleLoadMore}/>
         <GlobalStyle/>
       </section>
