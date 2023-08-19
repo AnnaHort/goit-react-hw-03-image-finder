@@ -4,7 +4,6 @@ import { GlobalStyle } from './Global.style';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { fetchImages } from './API';
-import { Puff } from 'react-loader-spinner';
 import { Loader } from './Loader/Loader';
 
 export class App extends Component {
