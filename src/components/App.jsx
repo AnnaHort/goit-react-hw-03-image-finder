@@ -5,7 +5,6 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { fetchImages } from './API';
 import { Loader } from './Loader/Loader';
-import { ModalContainer } from './Modal/Modal';
 
 export class App extends Component {
   state = {
@@ -14,7 +13,6 @@ export class App extends Component {
     page: 1,
     imagesPerPage: 12,
     isLoading: false, // стан завантаження для лоадера
-    selectedImageUrl: null, //стан відображення модального вікна
   };
 
   // #1 функція для передачі значення інпута при сабміті форми
@@ -62,29 +60,18 @@ export class App extends Component {
     }));
   };
 
-  // #5 стан відображення модального вікна
-  openModal = (imageUrl) => {
-    this.setState({ selectedImageUrl: imageUrl });
-  };
-
-  closeModal = () => {
-    console.log("Closing modal...");
-    this.setState({ selectedImageUrl: null });
-  };
-
   render() {
-    const { images, query, imagesPerPage, isLoading, selectedImageUrl } = this.state;
+    const { images, query, imagesPerPage, isLoading } = this.state;
   
     return (
       <section style={{ position: 'relative' }}>
         <SearchBar onSubmit={this.onSubmit} />
-        <ImageGallery images={images} onImageClick={this.openModal} />
+        <ImageGallery images={images} onImageClick={this.openModal}/>
         {isLoading && <Loader />}
         {images.length > 0 && query !== '' && images.length % imagesPerPage === 0 && (
           <Button onClick={this.handleLoadMore} />
         )}
         <GlobalStyle />
-        <ModalContainer isOpen={selectedImageUrl !== null} imageUrl={selectedImageUrl} onClose={this.closeModal} />
       </section>
     );
   }
