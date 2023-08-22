@@ -15,10 +15,10 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    color: 'black',
     maxWidth: '90vw',
     maxHeight: '80vh',
-    overflow: 'hidden',
+    background: 'none',
+    border: '1px solid #ab8f8f',
   },
 };
 
@@ -27,14 +27,19 @@ Modal.setAppElement('#root');
 export class ImageGalleryItem extends Component {
   state = {
     modalOpenItem: null,
+    isLoading: false,
   };
 
   openModal = (itemId) => {
-    this.setState({ modalOpenItem: itemId });
+    this.setState({ 
+      modalOpenItem: itemId,
+       isLoading: true });
   };
 
   closeModal = () => {
-    this.setState({ modalOpenItem: null });
+    this.setState({ 
+      modalOpenItem: null,
+       isLoading: false });
   };
 
   render() {
@@ -60,9 +65,9 @@ export class ImageGalleryItem extends Component {
                 style={customStyles}
                 contentLabel="Example Modal"
               >
-                    <StyledModalImg src={largeImageURL} alt={tags} />
-           
+                  <StyledModalImg src={largeImageURL} alt={tags} />
               </Modal>
+
             </StyledListEl>
           );
         })}
@@ -70,4 +75,6 @@ export class ImageGalleryItem extends Component {
     );
   }
 }
+
+
 

@@ -17,10 +17,15 @@ export class App extends Component {
 
   // #1 функція для передачі значення інпута при сабміті форми
   onSubmit = inputValue => {
+    const { query } = this.state;
+    if (query === inputValue) {
+      alert('you wrote this word early');
+    }
     this.setState({
       query: inputValue,
       images: [],
       page: 1,
+      isLoading: true,
     });
   };
 
@@ -62,15 +67,17 @@ export class App extends Component {
 
   render() {
     const { images, query, imagesPerPage, isLoading } = this.state;
-  
+
     return (
       <section style={{ position: 'relative' }}>
         <SearchBar onSubmit={this.onSubmit} />
-        <ImageGallery images={images} onImageClick={this.openModal}/>
+        <ImageGallery images={images} onImageClick={this.openModal} />
         {isLoading && <Loader />}
-        {images.length > 0 && query !== '' && images.length % imagesPerPage === 0 && (
-          <Button onClick={this.handleLoadMore} />
-        )}
+        {images.length > 0 &&
+          query !== '' &&
+          images.length % imagesPerPage === 0 && (
+            <Button onClick={this.handleLoadMore} />
+          )}
         <GlobalStyle />
       </section>
     );
